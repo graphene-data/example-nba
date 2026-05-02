@@ -1,0 +1,66 @@
+table game (
+  season_id VARCHAR
+  team_id_home VARCHAR
+  team_abbreviation_home VARCHAR
+  team_name_home VARCHAR
+  game_id VARCHAR
+  game_date TIMESTAMP
+  matchup_home VARCHAR
+  wl_home VARCHAR
+  min BIGINT
+  fgm_home DOUBLE
+  fga_home DOUBLE
+  fg_pct_home DOUBLE
+  fg3m_home DOUBLE
+  fg3a_home DOUBLE
+  fg3_pct_home DOUBLE
+  ftm_home DOUBLE
+  fta_home DOUBLE
+  ft_pct_home DOUBLE
+  oreb_home DOUBLE
+  dreb_home DOUBLE
+  reb_home DOUBLE
+  ast_home DOUBLE
+  stl_home DOUBLE
+  blk_home DOUBLE
+  tov_home DOUBLE
+  pf_home DOUBLE
+  pts_home DOUBLE
+  plus_minus_home BIGINT
+  video_available_home BIGINT
+  team_id_away VARCHAR
+  team_abbreviation_away VARCHAR
+  team_name_away VARCHAR
+  matchup_away VARCHAR
+  wl_away VARCHAR
+  fgm_away DOUBLE
+  fga_away DOUBLE
+  fg_pct_away DOUBLE
+  fg3m_away DOUBLE
+  fg3a_away DOUBLE
+  fg3_pct_away DOUBLE
+  ftm_away DOUBLE
+  fta_away DOUBLE
+  ft_pct_away DOUBLE
+  oreb_away DOUBLE
+  dreb_away DOUBLE
+  reb_away DOUBLE
+  ast_away DOUBLE
+  stl_away DOUBLE
+  blk_away DOUBLE
+  tov_away DOUBLE
+  pf_away DOUBLE
+  pts_away DOUBLE
+  plus_minus_away BIGINT
+  video_available_away BIGINT
+  season_type VARCHAR
+  join one team as home_team on team_id_home = home_team.id
+  join one team as away_team on team_id_away = away_team.id
+  join many game_info on game_id = game_info.game_id
+  join many game_summary on game_id = game_summary.game_id
+  join many line_score on game_id = line_score.game_id
+  join many other_stats on game_id = other_stats.game_id
+  join many play_by_play on game_id = play_by_play.game_id
+  join many officials on game_id = officials.game_id
+  join many inactive_players on game_id = inactive_players.game_id
+)
