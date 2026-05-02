@@ -81,6 +81,32 @@ From <Value data=correlation_summary column=first_season /> through <Value data=
   height="420px"
 />
 
+```sql season_scatter
+from season_trends
+select
+  season,
+  case
+    when season between '1982' and '1989' then '1980s'
+    when season between '1990' and '1999' then '1990s'
+    when season between '2000' and '2009' then '2000s'
+    when season between '2010' and '2019' then '2010s'
+    else '2020s'
+  end as era,
+  round(home_win_pct, 1) as home_win_pct,
+  round(three_point_rate, 1) as three_point_rate,
+  round(team_3pa_per_game, 1) as team_3pa_per_game
+order by season
+```
+
+<ScatterPlot
+  title="Every season shifts the league down and to the right"
+  data="season_scatter"
+  x="three_point_rate"
+  y="home_win_pct"
+  splitBy="era"
+  height="420px"
+/>
+
 The long-run shape is the story. In the 1980s, the average team took just **<Value data=headline_values column=team_3pa_1980s />** threes per game. In the 2020s, the average team took **<Value data=headline_values column=team_3pa_2020s />**. Home teams still win more often than road teams, but the advantage is smaller in the highest-3P era.
 
 <Table title="Era summary" data="era_summary" sortable rows=10 compact>
@@ -95,6 +121,65 @@ The long-run shape is the story. In the 1980s, the average team took just **<Val
 </Table>
 
 The supporting columns point in the same direction as the hypothesis. The home team free-throw edge and the away-minus-home personal foul gap both shrink across eras. That does not prove officiating caused home-court advantage to fall, but it does show the older version of home court came with more visible foul-line separation.
+
+```sql recent_game_profiles
+with game_profiles as (
+  from game
+  select
+    game_id,
+    season,
+    three_point_rate * 100 as three_point_rate,
+    home_win_flag * 100 as home_win,
+    home_fta_diff,
+    away_minus_home_pf
+  where season_type = 'Regular Season'
+    and season between '2013' and '2022'
+    and fga_home is not null
+    and fga_away is not null
+),
+bucketed as (
+  from game_profiles
+  select
+    *,
+    case
+      when three_point_rate < 28.4 then 'Low 3P'
+      when three_point_rate < 33.9 then 'Moderate 3P'
+      when three_point_rate < 39.1 then 'High 3P'
+      else 'Very high 3P'
+    end as shot_profile
+)
+from bucketed
+select
+  shot_profile,
+  count() as games,
+  round(min(three_point_rate), 1) as min_three_point_rate,
+  round(max(three_point_rate), 1) as max_three_point_rate,
+  round(avg(home_win), 1) as home_win_pct,
+  round(avg(home_fta_diff), 2) as home_fta_diff,
+  round(avg(away_minus_home_pf), 2) as away_minus_home_pf
+order by min_three_point_rate
+```
+
+<Row>
+  <BarChart
+    title="In recent high-3P games, home teams win less often"
+    data="recent_game_profiles"
+    x="shot_profile"
+    y="home_win_pct"
+    label
+    height="320px"
+  />
+  <BarChart
+    title="The foul gap is also smaller in high-3P games"
+    data="recent_game_profiles"
+    x="shot_profile"
+    y="away_minus_home_pf"
+    label
+    height="320px"
+  />
+</Row>
+
+These buckets look only at the 2013-14 through 2022-23 regular seasons, when the whole league was already taking threes seriously. Even within that modern period, the highest-3P games show a smaller home win rate than lower-3P games.
 
 ```sql three_point_line_window
 from season_trends
@@ -140,16 +225,45 @@ where season_type = 'Regular Season'
   and fga_away is not null
 ```
 
-```sql top_three_point_team_seasons
+```sql all_team_seasons
 from team_games
 select
   season,
+  case
+    when season between '1982' and '1989' then '1980s'
+    when season between '1990' and '1999' then '1990s'
+    when season between '2000' and '2009' then '2000s'
+    when season between '2010' and '2019' then '2010s'
+    else '2020s'
+  end as era,
   team,
   count() as games,
   round(avg(fg3a / nullif(fga, 0)) * 100, 1) as three_point_rate,
   round(avg(fg3a), 1) as threes_attempted,
   round(avg(case when wl = 'W' then 1.0 else 0.0 end) * 100, 1) as win_pct
-where games >= 40
+where games >= 65
+  and season >= '1982'
+order by season
+```
+
+<ScatterPlot
+  title="Team seasons reveal the modern 3-point frontier"
+  data="all_team_seasons"
+  x="three_point_rate"
+  y="win_pct"
+  splitBy="era"
+  height="460px"
+/>
+
+```sql top_three_point_team_seasons
+from all_team_seasons
+select
+  season,
+  team,
+  games,
+  three_point_rate,
+  threes_attempted,
+  win_pct
 order by three_point_rate desc
 limit 12
 ```
