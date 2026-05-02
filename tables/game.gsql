@@ -54,6 +54,21 @@ table game (
   plus_minus_away BIGINT
   video_available_away BIGINT
   season_type VARCHAR
+  season: substr(season_id, 2, 4)
+  home_win: wl_home = 'W'
+  home_win_flag: case when wl_home = 'W' then 1.0 else 0.0 end
+  three_point_rate: (fg3a_home + fg3a_away) / nullif(fga_home + fga_away, 0)
+  team_3pa_per_game: (fg3a_home + fg3a_away) / 2
+  team_pts_per_game: (pts_home + pts_away) / 2
+  home_fta_diff: fta_home - fta_away
+  away_minus_home_pf: pf_away - pf_home
+  games: count(*)
+  home_win_pct: avg(home_win_flag)
+  avg_three_point_rate: avg(three_point_rate)
+  avg_team_3pa_per_game: avg(team_3pa_per_game)
+  avg_team_pts_per_game: avg(team_pts_per_game)
+  avg_home_fta_diff: avg(home_fta_diff)
+  avg_away_minus_home_pf: avg(away_minus_home_pf)
   join one team as home_team on team_id_home = home_team.id
   join one team as away_team on team_id_away = away_team.id
   join many game_info on game_id = game_info.game_id
