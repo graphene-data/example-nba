@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@duckdb/node-api": "1.3.2-alpha.26",
-    "@graphenedata/cli": "0.0.16",
-    "svelte": "5.53.7"
+    "@graphenedata/cli": "0.0.17",
+    "svelte": "5.55.3"
   },
   "graphene": {
     "dialect": "duckdb",
