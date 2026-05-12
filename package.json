@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@google-cloud/bigquery": "^8.3.1",
-    "@graphenedata/cli": "0.0.17",
+    "@graphenedata/cli": "0.0.18",
     "svelte": "5.55.3"
   },
   "graphene": {
