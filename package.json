@@ -4,6 +4,7 @@
   "scripts": {
     "graphene": "graphene",
     "serve": "graphene serve",
+    "setup": "curl -L 'https://graphene-demos.s3.us-east-1.amazonaws.com/nba.duckdb' -o nba.duckdb",
     "compile": "graphene compile",
     "run": "graphene run"
   },
