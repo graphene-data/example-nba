@@ -3,8 +3,6 @@ title: The Arc and the Edge
 layout: notebook
 ---
 
-# The Arc and the Edge
-
 NBA offenses have moved steadily behind the 3-point line. [NBA.com describes](https://www.nba.com/news/3-point-era-nba-75) 3-point attempts as rising from a novelty to nearly two-fifths of all field-goal attempts by 2020-21. That shift raises a useful question for this dataset: did the more perimeter-oriented league also flatten home-court advantage?
 
 This notebook tests a simple version of the idea raised by [Harvard Sports Analysis](https://harvardsportsanalysis.org/2017/03/nba-home-court-advantage-is-in-decline-are-3s-to-blame/): if games are decided more by jump shooting and less by paint pressure, free throws, and foul calls, the home floor may matter less than it used to.
